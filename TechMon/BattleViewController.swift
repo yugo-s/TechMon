@@ -15,7 +15,10 @@ class BattleViewController: UIViewController {
     @IBOutlet var PlayerMPLabel: UILabel!
     @IBOutlet var PlayerTPLabel: UILabel!
     
-    
+    @IBOutlet var critcalLabel: UILabel!
+    @IBOutlet var tamerucritcal:UILabel!
+    @IBOutlet var enemycritcalLabel: UILabel!
+    @IBOutlet var kaihukucritcalLabel: UILabel!
     
     @IBOutlet var enemyNameLabel: UILabel!
     @IBOutlet var enemyImageView: UIImageView!
@@ -26,6 +29,8 @@ class BattleViewController: UIViewController {
     
     var player: Character!
     var enemy: Character!
+    
+    var critcal: Int!
     
     var gameTimer: Timer!
     var isPlayerAttackAvailabel: Bool = true
@@ -135,7 +140,13 @@ class BattleViewController: UIViewController {
         techMonManager.damageAnimation(imageView: playerImageView)
         techMonManager.playSE(fileName: "SE_attack")
         
+        critcal = Int.random(in: 0...7)
+        if critcal == 0 {
+            player.currentHP -= 40
+            enemycritcalLabel.text = "CRITCAL!"
+        }else{
         player.currentHP -= 20
+        }
         
         judgeBattle()
           
@@ -174,12 +185,24 @@ class BattleViewController: UIViewController {
     }
         
            @IBAction func attackAction() {
-             
+               critcalLabel.text = ""
+               tamerucritcal.text = ""
+               enemycritcalLabel.text = ""
+               kaihukucritcalLabel.text = ""
             if isPlayerAttackAvailabel{
                 techMonManager.damageAnimation(imageView: enemyImageView)
                 techMonManager.playSE(fileName: "SE_attack")
                 
+                critcal = Int.random(in: 0...3)
+                if critcal == 0 {
+                    enemy.currentHP -= player.attackPoint * 2
+                    player.currentHP += 5
+                    player.currentTP += 20
+                    
+                    critcalLabel.text = "CRITCAL!"
+                }else{
                 enemy.currentHP -= player.attackPoint
+                }
                 
                 player.currentTP += 10
                 if player.currentTP >= player.maxTP{
@@ -198,10 +221,22 @@ class BattleViewController: UIViewController {
         }
         
          @IBAction func tameruAction() {
-        
+             enemycritcalLabel.text = ""
+             critcalLabel.text = ""
+             tamerucritcal.text = ""
+             kaihukucritcalLabel.text = ""
              if isPlayerAttackAvailabel {
                  techMonManager.playSE(fileName: "SE_charge")
-                 player.currentTP += 40
+                 
+                 critcal = Int.random(in: 0...3)
+                 if critcal == 0 {
+                     player.currentTP += 80
+                     tamerucritcal.text = "CRITCAL!"
+                 }else {
+                     player.currentTP += 40
+                 }
+                 
+                
                  if player.currentTP >= player.maxTP{
                      player.currentTP = player.maxTP
                  }
@@ -209,14 +244,52 @@ class BattleViewController: UIViewController {
                  
              }
          }
+    @IBAction func kaihukuAction() {
+        enemycritcalLabel.text = ""
+        critcalLabel.text = ""
+        tamerucritcal.text = ""
+        kaihukucritcalLabel.text = ""
+        if isPlayerAttackAvailabel {
+            techMonManager.playSE(fileName: "SE_charge")
+            
+            critcal = Int.random(in: 0...3)
+            if critcal == 0 {
+                player.currentHP += 20
+                kaihukucritcalLabel.text = "CRITCAL!"
+            }else {
+                player.currentHP += 10
+            }
+            if player.currentHP >= player.maxHP && critcal == 0 {
+                player.currentHP = player.currentHP
+            }else if player.currentHP >= player.maxHP && critcal != 0{
+                player.currentHP = player.maxHP
+            }
+            player.currentMP = 0
+            
+        }
+        
+        
+        
+    }
     
     @IBAction func fireAction(){
+        enemycritcalLabel.text = ""
+        critcalLabel.text = ""
+        tamerucritcal.text = ""
+        kaihukucritcalLabel.text = ""
         if isPlayerAttackAvailabel && player.currentTP >= 40{
             
             techMonManager.damageAnimation(imageView: enemyImageView)
             techMonManager.playSE(fileName: "SE_fire")
-            enemy.currentHP -= 100
             
+            critcal = Int.random(in: 0...7)
+            if critcal == 0 {
+                enemy.currentHP -= 200
+                critcalLabel.text = "CRITCAL!"
+            }else{
+            enemy.currentHP -= 100
+            }
+                
             player.currentTP -= 40
             
             
